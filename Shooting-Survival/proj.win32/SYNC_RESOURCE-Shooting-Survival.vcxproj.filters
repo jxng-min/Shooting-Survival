@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\GameProject\Cocos2d\Github\Shooting-Survival\Shooting-Survival\proj.win32\CMakeFiles\a26dc1ecadc7ac680b2c09baf3dcb063\SYNC_RESOURCE-Shooting-Survival.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\GameProject\Cocos2d\Github\Shooting-Survival\Shooting-Survival\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="D:\GameProject\Cocos2d\Github\Shooting-Survival\Shooting-Survival\proj.win32\CMakeFiles\SYNC_RESOURCE-Shooting-Survival" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{CFAF3CAD-8201-3BB5-80F4-4C95EA5B939F}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

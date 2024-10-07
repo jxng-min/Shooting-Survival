@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\GameProject\Cocos2d\Github\Shooting-Survival\Shooting-Survival\Classes\AppDelegate.cpp">
+      <Filter>Source Files\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GameProject\Cocos2d\Github\Shooting-Survival\Shooting-Survival\Classes\HelloWorldScene.cpp">
+      <Filter>Source Files\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GameProject\Cocos2d\Github\Shooting-Survival\Shooting-Survival\proj.win32\main.cpp">
+      <Filter>Source Files\proj.win32</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GameProject\Cocos2d\Github\Shooting-Survival\Shooting-Survival\cocos2d\cocos\precheader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\GameProject\Cocos2d\Github\Shooting-Survival\Shooting-Survival\Classes\AppDelegate.h">
+      <Filter>Source Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\GameProject\Cocos2d\Github\Shooting-Survival\Shooting-Survival\Classes\HelloWorldScene.h">
+      <Filter>Source Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\GameProject\Cocos2d\Github\Shooting-Survival\Shooting-Survival\proj.win32\main.h">
+      <Filter>Source Files\proj.win32</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\GameProject\Cocos2d\Github\Shooting-Survival\Shooting-Survival\proj.win32\resource.h">
+      <Filter>Source Files\proj.win32</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\GameProject\Cocos2d\Github\Shooting-Survival\Shooting-Survival\Resources\CloseNormal.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\GameProject\Cocos2d\Github\Shooting-Survival\Shooting-Survival\Resources\CloseSelected.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\GameProject\Cocos2d\Github\Shooting-Survival\Shooting-Survival\Resources\HelloWorld.png">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\GameProject\Cocos2d\Github\Shooting-Survival\Shooting-Survival\Resources\fonts\Marker Felt.ttf">
+      <Filter>Resources\fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\GameProject\Cocos2d\Github\Shooting-Survival\Shooting-Survival\Resources\fonts\arial.ttf">
+      <Filter>Resources\fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\GameProject\Cocos2d\Github\Shooting-Survival\Shooting-Survival\Resources\res\.gitkeep">
+      <Filter>Resources\res</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\GameProject\Cocos2d\Github\Shooting-Survival\Shooting-Survival\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="D:\GameProject\Cocos2d\Github\Shooting-Survival\Shooting-Survival\proj.win32\game.rc">
+      <Filter>Source Files\proj.win32</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{31BA3469-7A76-3CED-9C1E-57C11F22B2A3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\fonts">
+      <UniqueIdentifier>{9FB147CE-1FBB-381E-92B1-253AB3759715}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\res">
+      <UniqueIdentifier>{C0E2CDDC-10EE-3CB2-BDF8-E094286F9B12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{0BDBCCD0-C170-3BCD-B9B3-F71E20E95F53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes">
+      <UniqueIdentifier>{0D28D347-4919-339F-A368-14CE31CDCD3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\proj.win32">
+      <UniqueIdentifier>{514BA484-5B37-3591-8739-CD52192CB616}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
