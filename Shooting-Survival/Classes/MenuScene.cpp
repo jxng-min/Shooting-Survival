@@ -15,6 +15,8 @@ bool MenuScene::init()
     if (!Layer::init())
         return false;
 
+    SimpleAudioEngine::getInstance()->playBackgroundMusic("Sounds/MenuBackground.mp3");
+
     InitData();
     InitBackground();
     InitTitle();
@@ -93,6 +95,8 @@ void MenuScene::InitMenu()
 
 void MenuScene::MenuCallback(Ref* sender)
 {
+    SimpleAudioEngine::getInstance()->playEffect("Sounds/ButtonClick.mp3");
+
     auto item = (MenuItemLabel*)sender;
 
     switch (item->getTag())

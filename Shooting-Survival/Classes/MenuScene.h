@@ -4,7 +4,9 @@
 #include "cocos2d.h"
 #include "AboutScene.h"
 #include "GameScene.h"
+#include "cocos\editor-support\cocostudio\SimpleAudioEngine.h"
 
+using namespace CocosDenshion;
 USING_NS_CC;
 
 #define TAG_LAYER_TITLE             1
