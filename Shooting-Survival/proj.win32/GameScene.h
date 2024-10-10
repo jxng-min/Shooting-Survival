@@ -35,9 +35,11 @@ private:
 	Vector<Sprite*> m_enemies;
 
 	Vector<Sprite*> m_bullets;
+	Vector<Sprite*> m_bullet_ui;
 	int m_bullet_count;
 
 	int m_score;
+	int m_high_score;
 	
 	Vector<Sprite*> m_lifes;
 	int m_life;
@@ -76,6 +78,7 @@ public:
 	void CollisionPlayer();
 
 	void ReloadBullet();
+	void RunEnemyToPlayer(float delta);
 
 	virtual void onTouchesBegan(const std::vector<Touch*>& touches, Event* unused_event);
 	virtual void onTouchesMoved(const std::vector<Touch*>& touches, Event* unused_event);

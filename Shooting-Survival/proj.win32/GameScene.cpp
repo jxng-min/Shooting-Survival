@@ -26,6 +26,7 @@ bool GameScene::init()
 
     this->scheduleUpdate();
     this->schedule(CC_SCHEDULE_SELECTOR(GameScene::SetEnemy), 3.0 + rand() % (3 + 1));
+    this->schedule(CC_SCHEDULE_SELECTOR(GameScene::RunEnemyToPlayer), 4.0 + rand() % (4 + 1));
 
 	return true;
 }
@@ -47,9 +48,10 @@ void GameScene::InitData()
     m_is_moving = false;
     m_is_reloading = false;
 
-    m_bullet_count = 10;
+    m_bullet_count = 5;
     m_score = 0;
     m_life = 3;
+    m_high_score = UserDefault::getInstance()->getIntegerForKey("High Score", 0);
 
     m_enemies.clear();
     m_bullets.clear();
@@ -65,6 +67,7 @@ void GameScene::InitTouchListener()
     listener->onTouchesEnded = CC_CALLBACK_2(GameScene::onTouchesEnded, this);
     Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(listener, 1);
 }
+
 
 
 
@@ -159,7 +162,7 @@ void GameScene::InitHighScoreUI()
 {
     auto gui_layer = (Layer*)this->getChildByTag(TAG_LAYER_GUI);
 
-    auto hiscore_label = Label::createWithTTF(StringUtils::format("HI       : %04d", 0), "StarDust.ttf", 10);
+    auto hiscore_label = Label::createWithTTF(StringUtils::format("HI       : %04d", m_high_score), "StarDust.ttf", 10);
     hiscore_label->setColor(Color3B::BLACK);
     hiscore_label->setPosition(Point(m_window_size.width - 40, m_window_size.height - 120));
     hiscore_label->setTag(TAG_UI_HISCORE);
@@ -182,8 +185,19 @@ void GameScene::InitLifeUI()
 
 void GameScene::InitBulletUI()
 {
+    auto gui_layer = (Layer*)this->getChildByTag(TAG_LAYER_GUI);
 
+    for (auto i = 0; i < 5; i++)
+    {
+        auto ui_sprite = Sprite::create("Bullet/bullet.png");
+        ui_sprite->setScale(0.1);
+        ui_sprite->setPosition(Point(m_window_size.width - 60 + (i * 10), 120));
+        gui_layer->addChild(ui_sprite);
+        
+        m_bullet_ui.pushBack(ui_sprite);
+    }
 }
+
 
 
 
@@ -319,6 +333,8 @@ void GameScene::SetBullet(float delta)
 
     bullet_sprite->runAction(sequence_action);
 
+    m_bullet_count--;
+
     SimpleAudioEngine::getInstance()->playEffect("");   // 총을 쏘는 소리
 }
 
@@ -385,7 +401,7 @@ void GameScene::CollisionBullet()
 void GameScene::CollisionPlayer()
 {
     auto player_sprite = (Sprite*)this->getChildByTag(TAG_SPRITE_PLAYER);
-    auto player_rect = player_sprite->getBoundingBox();
+    auto player_rect = Rect(player_sprite->getPosition().x - 10, player_sprite->getPositionY() + 5, 5, 5);
 
     auto remove_enemy = Sprite::create();
 
@@ -420,15 +436,43 @@ void GameScene::CollisionPlayer()
         SimpleAudioEngine::getInstance()->playEffect("");   // 슬라임이 죽는 소리
         SimpleAudioEngine::getInstance()->playEffect("");   // 플레이어가 데미지를 입는 소리
     }
+
+    if (m_life == 0)
+    {
+        Director::getInstance()->pause();
+        UserDefault::getInstance()->setIntegerForKey("High Score", m_score);
+    }
 }
+
 
 
 
 void GameScene::ReloadBullet()
 {
-    m_bullet_count = 10;
+    m_bullet_count = 5;
     m_is_reloading = false;
+
+    for (auto i = 0; i < 5; i++)
+        m_bullet_ui.at(i)->setOpacity(255);
 }
+
+void GameScene::RunEnemyToPlayer(float delta)
+{
+    if (m_enemies.empty())
+        return;
+
+    auto enemy_sprite = m_enemies.getRandomObject();
+    auto player_sprite = (Sprite*)this->getChildByTag(TAG_SPRITE_PLAYER);
+
+    ccBezierConfig bezier_config;
+    bezier_config.controlPoint_1 = Point(enemy_sprite->getPosition().x - 100, enemy_sprite->getPosition().y - 100);
+    bezier_config.controlPoint_2 = Point(player_sprite->getPosition().x - 100, player_sprite->getPosition().y - 100);
+    bezier_config.endPosition = player_sprite->getPosition();
+    auto bezier_action = BezierTo::create(2.0, bezier_config);
+
+    enemy_sprite->runAction(bezier_action);
+}
+
 
 
 
@@ -453,7 +497,10 @@ void GameScene::onTouchesBegan(const std::vector<Touch*>& touches, Event* unused
         else if (shooting_rect.containsPoint(location))
         {
             if (m_bullet_count > 0 && !m_is_reloading)
+            {
                 this->scheduleOnce(CC_SCHEDULE_SELECTOR(GameScene::SetBullet), 0);
+                m_bullet_ui.at(5 - m_bullet_count)->setOpacity(122);
+            }
             else if (m_bullet_count > 0 && m_is_reloading)
                 SimpleAudioEngine::getInstance()->playEffect("");   // 철컥하는 소리
             else
