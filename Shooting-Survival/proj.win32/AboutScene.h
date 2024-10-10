@@ -2,7 +2,9 @@
 #define __ABOUT_SCENE_H__
 
 #include "cocos2d.h"
+#include "cocos\editor-support\cocostudio\SimpleAudioEngine.h"
 
+using namespace CocosDenshion;
 USING_NS_CC;
 
 #define TAG_LAYER_UI				1

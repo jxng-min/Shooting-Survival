@@ -61,14 +61,17 @@ void AboutScene::InitUI()
     this->addChild(ui_layer);
 
     auto title_label = Label::createWithTTF("ABOUT", "StarDust.ttf", 35);
+    title_label->setColor(Color3B::BLACK);
     title_label->setPosition(Point(m_window_size.width / 2, m_window_size.height / 2 + 75));
     ui_layer->addChild(title_label);
 
     auto script_label = Label::createWithTTF("This game is for Cocos2d-x portfolio.", "StarDust.ttf", 15);
+    script_label->setColor(Color3B::BLACK);
     script_label->setPosition(Point(150, m_window_size.height / 2 + 15));
     ui_layer->addChild(script_label);
 
     auto github_label = Label::createWithTTF("Github: jxng-min", "StarDust.ttf", 10);
+    github_label->setColor(Color3B::BLACK);
     github_label->setPosition(Point(m_window_size.width - 50, 80));
     ui_layer->addChild(github_label);
 
@@ -80,6 +83,7 @@ void AboutScene::InitMenu()
     auto ui_layer = this->getChildByTag(TAG_LAYER_UI);
 
     auto back_label = Label::createWithTTF("BACK", "StarDust.ttf", 15);
+    back_label->setColor(Color3B::BLACK);
 
     auto back_item = MenuItemLabel::create(back_label, CC_CALLBACK_1(AboutScene::MenuCallback, this));
     back_item->setTag(TAG_ITEM_BACK);
@@ -93,6 +97,8 @@ void AboutScene::InitMenu()
 
 void AboutScene::MenuCallback(Ref* sender)
 {
+    SimpleAudioEngine::getInstance()->playEffect("Sounds/Button_Click.mp3");
+
     auto item = (MenuItemLabel*)sender;
 
     switch (item->getTag())

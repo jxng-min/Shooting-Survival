@@ -64,6 +64,7 @@ void MenuScene::InitTitle()
 
     auto title_label = Label::createWithTTF("SHOOTING SURVIVAL", "StarDust.ttf", 35);
     title_label->setPosition(Point(m_window_size.width / 2, m_window_size.height / 2 + 35));
+    title_label->setColor(Color3B::BLACK);
     title_layer->addChild(title_label);
 
     InitMenu();
@@ -74,8 +75,13 @@ void MenuScene::InitMenu()
     auto title_layer = (Layer*)this->getChildByTag(TAG_LAYER_TITLE);
 
     auto about_label = Label::createWithTTF("ABOUT", "StarDust.ttf", 15);
+    about_label->setColor(Color3B::BLACK);
+
     auto start_label = Label::createWithTTF("START", "StarDust.ttf", 15);
+    start_label->setColor(Color3B::BLACK);
+
     auto quit_label = Label::createWithTTF("QUIT", "StarDust.ttf", 15);
+    quit_label->setColor(Color3B::BLACK);
 
     auto about_item = MenuItemLabel::create(about_label, CC_CALLBACK_1(MenuScene::MenuCallback, this));
     about_item->setTag(TAG_ITEM_ABOUT);

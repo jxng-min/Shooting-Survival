@@ -17,6 +17,9 @@ USING_NS_CC;
 #define TAG_UI_SCORE				6
 #define TAG_UI_HISCORE				7
 #define TAG_UI_LIFE					8
+#define TAG_LAYER_SETTING			9
+#define TAG_ITEM_BACK				10
+#define TAG_ITEM_TITLE				11
 
 #define PADDING_SCREEN_X			50
 #define PADDING_SCREEN_Y			100
@@ -31,6 +34,7 @@ private:
 
 	bool m_is_moving;
 	bool m_is_reloading;
+	bool m_is_setting;
 
 	Vector<Sprite*> m_enemies;
 
@@ -63,6 +67,7 @@ public:
 	void InitHighScoreUI();
 	void InitLifeUI();
 	void InitBulletUI();
+	void InitSettingLayer();
 
 	void InitPlayer();
 	void PlayerMoveAnimation();
@@ -85,6 +90,8 @@ public:
 	virtual void onTouchesEnded(const std::vector<Touch*>& touches, Event* unused_event);
 
 	virtual void update(float delta);
+
+	void SettingMenuCallback(Ref* sender);
 };
 
 #endif

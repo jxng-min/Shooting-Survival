@@ -15,6 +15,8 @@ bool GameScene::init()
 	if (!Layer::init())
 		return false;
 
+    SimpleAudioEngine::getInstance()->playBackgroundMusic("");
+
     InitFrame();
     InitData();
 
@@ -47,6 +49,7 @@ void GameScene::InitData()
     
     m_is_moving = false;
     m_is_reloading = false;
+    m_is_setting = false;
 
     m_bullet_count = 5;
     m_score = 0;
@@ -85,6 +88,7 @@ void GameScene::InitGUI()
     InitHighScoreUI();
     InitLifeUI();
     InitBulletUI();
+    InitSettingLayer();
 }
 
 void GameScene::InitBackground()
@@ -196,6 +200,36 @@ void GameScene::InitBulletUI()
         
         m_bullet_ui.pushBack(ui_sprite);
     }
+}
+
+void GameScene::InitSettingLayer()
+{
+    auto gui_layer = (Layer*)this->getChildByTag(TAG_LAYER_GUI);
+
+    auto setting_layer = Layer::create();
+    setting_layer->setTag(TAG_LAYER_SETTING);
+    setting_layer->setVisible(false);
+    gui_layer->addChild(setting_layer);
+
+    auto panel_sprite = Sprite::create("SettingPanel.png");
+    panel_sprite->setPosition(Point(m_window_size.width / 2, m_window_size.height / 2));
+    setting_layer->addChild(panel_sprite);
+
+    auto back_label = Label::createWithTTF("BACK", "StarDust.ttf", 15);
+    back_label->setColor(Color3B::WHITE);
+
+    auto title_label = Label::createWithTTF("TITLE", "StarDust.ttf", 15);
+    title_label->setColor(Color3B::WHITE);
+
+    auto back_item = MenuItemLabel::create(back_label, CC_CALLBACK_1(GameScene::SettingMenuCallback, this));
+    back_item->setTag(TAG_ITEM_BACK);
+
+    auto title_item = MenuItemLabel::create(title_label, CC_CALLBACK_1(GameScene::SettingMenuCallback, this));
+    title_item->setTag(TAG_ITEM_TITLE);
+
+    auto setting_menu = Menu::create(back_item, title_item, NULL);
+    setting_menu->alignItemsVertically();
+    setting_layer->addChild(setting_menu);
 }
 
 
@@ -478,6 +512,9 @@ void GameScene::RunEnemyToPlayer(float delta)
 
 void GameScene::onTouchesBegan(const std::vector<Touch*>& touches, Event* unused_event)
 {
+    if (m_is_setting)
+        return;
+
     for (auto touch : touches)
     {
         auto setting_button = (Sprite*)this->getChildByTag(TAG_LAYER_GUI)->getChildByTag(TAG_SPRITE_SETTING);
@@ -492,7 +529,10 @@ void GameScene::onTouchesBegan(const std::vector<Touch*>& touches, Event* unused
         auto location = touch->getLocation();
         if (setting_rect.containsPoint(location))
         {
-
+            m_is_setting = true;
+            auto setting_layer = (Layer*)this->getChildByTag(TAG_LAYER_GUI)->getChildByTag(TAG_LAYER_SETTING);
+            setting_layer->setVisible(true);
+            Director::getInstance()->pause();
         }
         else if (shooting_rect.containsPoint(location))
         {
@@ -514,9 +554,9 @@ void GameScene::onTouchesBegan(const std::vector<Touch*>& touches, Event* unused
             m_is_reloading = true;
 
             auto sequence_action = Sequence::create(
-                                                    DelayTime::create(3.0),
-                                                    CallFunc::create(CC_CALLBACK_0(GameScene::ReloadBullet, this)),
-                                                    NULL);
+                DelayTime::create(3.0),
+                CallFunc::create(CC_CALLBACK_0(GameScene::ReloadBullet, this)),
+                NULL);
             this->runAction(sequence_action);
         }
         else
@@ -536,6 +576,9 @@ void GameScene::onTouchesBegan(const std::vector<Touch*>& touches, Event* unused
 
 void GameScene::onTouchesMoved(const std::vector<Touch*>& touches, Event* unused_event)
 {
+    if (m_is_setting)
+        return;
+
     for (auto touch : touches)
     {
         auto location = touch->getLocation();
@@ -560,4 +603,25 @@ void GameScene::update(float delta)
     ConstraintPlayerPostion();
     CollisionBullet();
     CollisionPlayer();
+}
+
+void GameScene::SettingMenuCallback(Ref* sender)
+{
+    auto item = (MenuItemLabel*)sender;
+
+    SimpleAudioEngine::getInstance()->playEffect("Sounds/Button_Click.mp3");
+
+    switch (item->getTag())
+    {
+    case TAG_ITEM_BACK:
+        m_is_setting = false;
+        this->getChildByTag(TAG_LAYER_GUI)->getChildByTag(TAG_LAYER_SETTING)->setVisible(false);
+        Director::getInstance()->resume();
+        break;
+
+    case TAG_ITEM_TITLE:
+        Director::getInstance()->resume();
+        Director::getInstance()->replaceScene(MenuScene::createScene());
+        break;
+    }
 }
