@@ -27,7 +27,7 @@ bool GameScene::init()
     InitTouchListener();
 
     this->scheduleUpdate();
-    this->schedule(CC_SCHEDULE_SELECTOR(GameScene::SetEnemy), 3.0 + rand() % (3 + 1));
+    this->schedule(CC_SCHEDULE_SELECTOR(GameScene::SetEnemy), 3.0 + rand() % (1 + 1));
     this->schedule(CC_SCHEDULE_SELECTOR(GameScene::RunEnemyToPlayer), 4.0 + rand() % (4 + 1));
 
 	return true;
@@ -303,21 +303,17 @@ void GameScene::SetEnemy(float delta)
     m_enemies.pushBack(enemy_sprite);
 
     auto run_animation = Animation::create();
-    run_animation->setDelayPerUnit(0.1);
+    run_animation->setDelayPerUnit(0.2);
 
-    for (auto i = 0; i < 4; i++)
+    for (auto i = 2; i < 4; i++)
     {
         auto frame = SpriteFrameCache::getInstance()->getSpriteFrameByName(StringUtils::format("slime_run_%d.png", i));
         run_animation->addSpriteFrame(frame);
     }
 
     auto run_animate_action = Animate::create(run_animation);
-    auto enemy_spawn_action = Spawn::create(
-                                            MoveTo::create(1.0, Point(x, y)),
-                                            RepeatForever::create(run_animate_action),
-                                            NULL);
-
-    enemy_sprite->runAction(enemy_spawn_action);
+    enemy_sprite->runAction(MoveTo::create(1.0, Point(x, y)));
+    enemy_sprite->runAction(RepeatForever::create(run_animate_action));
 }
 
 void GameScene::ResetEnemy(Ref* sender)
@@ -347,7 +343,7 @@ void GameScene::SetBullet(float delta)
     auto animation = Animation::create();
     animation->setDelayPerUnit(0.1);
 
-    for (auto i = 0; i < 4; i++)
+    for (auto i = 0; i < 2; i++)
     {
         auto frame = SpriteFrameCache::getInstance()->getSpriteFrameByName(StringUtils::format("Bullet_%d.png", i));
         animation->addSpriteFrame(frame);
@@ -581,12 +577,15 @@ void GameScene::onTouchesMoved(const std::vector<Touch*>& touches, Event* unused
 
     for (auto touch : touches)
     {
-        auto location = touch->getLocation();
+        if (m_is_moving)
+        {
+            auto location = touch->getLocation();
 
-        auto pos_change = location - m_pos_start_touch;
+            auto pos_change = location - m_pos_start_touch;
 
-        auto player_sprite = (Sprite*)this->getChildByTag(TAG_SPRITE_PLAYER);
-        player_sprite->setPosition(m_pos_start_player + pos_change);
+            auto player_sprite = (Sprite*)this->getChildByTag(TAG_SPRITE_PLAYER);
+            player_sprite->setPosition(m_pos_start_player + pos_change);
+        }
     }
 }
 
