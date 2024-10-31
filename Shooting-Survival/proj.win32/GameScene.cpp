@@ -15,7 +15,8 @@ bool GameScene::init()
 	if (!Layer::init())
 		return false;
 
-    SimpleAudioEngine::getInstance()->playBackgroundMusic("");
+    AudioEngine::stopAll();
+    AudioEngine::play2d("", true);
 
     InitFrame();
     InitData();
@@ -54,7 +55,7 @@ void GameScene::InitData()
     m_bullet_count = 5;
     m_score = 0;
     m_life = 3;
-    m_high_score = UserDefault::getInstance()->getIntegerForKey("High Score", 0);
+    m_high_score = UserDefault::getInstance()->getIntegerForKey("HighScore", 0);
 
     m_enemies.clear();
     m_bullets.clear();
@@ -89,6 +90,7 @@ void GameScene::InitGUI()
     InitLifeUI();
     InitBulletUI();
     InitSettingLayer();
+    InitGameOverLayer();
 }
 
 void GameScene::InitBackground()
@@ -218,20 +220,61 @@ void GameScene::InitSettingLayer()
     auto back_label = Label::createWithTTF("BACK", "StarDust.ttf", 15);
     back_label->setColor(Color3B::WHITE);
 
+    auto retry_label = Label::createWithTTF("RETRY", "StarDust.ttf", 15);
+    retry_label->setColor(Color3B::WHITE);
+
     auto title_label = Label::createWithTTF("TITLE", "StarDust.ttf", 15);
     title_label->setColor(Color3B::WHITE);
 
     auto back_item = MenuItemLabel::create(back_label, CC_CALLBACK_1(GameScene::SettingMenuCallback, this));
     back_item->setTag(TAG_ITEM_BACK);
 
+    auto retry_item = MenuItemLabel::create(retry_label, CC_CALLBACK_1(GameScene::SettingMenuCallback, this));
+    retry_item->setTag(TAG_ITEM_RETRY);
+
     auto title_item = MenuItemLabel::create(title_label, CC_CALLBACK_1(GameScene::SettingMenuCallback, this));
     title_item->setTag(TAG_ITEM_TITLE);
 
-    auto setting_menu = Menu::create(back_item, title_item, NULL);
-    setting_menu->alignItemsVertically();
+    auto setting_menu = Menu::create(back_item, retry_item, title_item, NULL);
+    setting_menu->alignItemsVerticallyWithPadding(10);
     setting_layer->addChild(setting_menu);
 }
 
+void GameScene::InitGameOverLayer()
+{
+    auto gui_layer = (Layer*)this->getChildByTag(TAG_LAYER_GUI);
+
+    auto gameover_layer = Layer::create();
+    gameover_layer->setTag(TAG_LAYER_GAME_OVER);
+    gameover_layer->setVisible(false);
+    gui_layer->addChild(gameover_layer);
+
+    auto panel_sprite = Sprite::create("SettingPanel.png");
+    panel_sprite->setPosition(Point(m_window_size.width / 2, m_window_size.height / 2));
+    gameover_layer->addChild(panel_sprite);
+
+    auto over_label = Label::createWithTTF("GAME OVER", "StarDust.ttf", 25);
+    over_label->setColor(Color3B::WHITE);
+    over_label->setPosition(Point(m_window_size.width / 2, m_window_size.height / 2 + 25));
+    gameover_layer->addChild(over_label, 1);
+
+    auto retry_label = Label::createWithTTF("RETRY", "StarDust.ttf", 15);
+    retry_label->setColor(Color3B::WHITE);
+
+    auto title_label = Label::createWithTTF("TITLE", "StarDust.ttf", 15);
+    title_label->setColor(Color3B::WHITE);
+
+    auto retry_item = MenuItemLabel::create(retry_label, CC_CALLBACK_1(GameScene::SettingMenuCallback, this));
+    retry_item->setTag(TAG_ITEM_RETRY);
+
+    auto title_item = MenuItemLabel::create(title_label, CC_CALLBACK_1(GameScene::SettingMenuCallback, this));
+    title_item->setTag(TAG_ITEM_TITLE);
+
+    auto setting_menu = Menu::create(retry_item, title_item, NULL);
+    setting_menu->alignItemsVerticallyWithPadding(10);
+    setting_menu->setPosition(Point(m_window_size.width / 2, m_window_size.height / 2 - 20));
+    gameover_layer->addChild(setting_menu);
+}
 
 
 
@@ -254,7 +297,7 @@ void GameScene::PlayerMoveAnimation()
     auto run_animation = Animation::create();
     run_animation->setDelayPerUnit(0.1);
 
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < 3; i++)
     {
         auto frame = SpriteFrameCache::getInstance()->getSpriteFrameByName(StringUtils::format("Run_%d.png", i + 1));
         run_animation->addSpriteFrame(frame);
@@ -364,8 +407,6 @@ void GameScene::SetBullet(float delta)
     bullet_sprite->runAction(sequence_action);
 
     m_bullet_count--;
-
-    SimpleAudioEngine::getInstance()->playEffect("");   // 총을 쏘는 소리
 }
 
 void GameScene::ResetBullet(Ref* sender)
@@ -424,7 +465,7 @@ void GameScene::CollisionBullet()
         auto gui_score = (Label*)this->getChildByTag(TAG_LAYER_GUI)->getChildByTag(TAG_UI_SCORE);
         gui_score->setString(StringUtils::format("SCORE: %04d", m_score));
 
-        SimpleAudioEngine::getInstance()->playEffect("");   // 슬라임이 죽는 소리
+        AudioEngine::play2d("Sounds/Slime_Dead.mp3");   // 슬라임이 죽는 소리
     }
 }
 
@@ -463,14 +504,22 @@ void GameScene::CollisionPlayer()
         m_lifes.at(3 - m_life)->setVisible(false);
         m_life--;
 
-        SimpleAudioEngine::getInstance()->playEffect("");   // 슬라임이 죽는 소리
-        SimpleAudioEngine::getInstance()->playEffect("");   // 플레이어가 데미지를 입는 소리
+        AudioEngine::play2d("Sounds/Slime_Dead.mp3");
+        AudioEngine::play2d("Sounds/Player_Damage.wav");
     }
 
     if (m_life == 0)
     {
-        Director::getInstance()->pause();
-        UserDefault::getInstance()->setIntegerForKey("High Score", m_score);
+        for (auto i = 0; i < m_enemies.size(); i++)
+            this->removeChild(m_enemies.at(i));
+
+        if (m_score > m_high_score)
+        {
+            m_high_score = m_score;
+            UserDefault::getInstance()->setIntegerForKey("HighScore", m_high_score);
+        }
+        
+        this->getChildByTag(TAG_LAYER_GUI)->getChildByTag(TAG_LAYER_GAME_OVER)->setVisible(true);
     }
 }
 
@@ -508,6 +557,9 @@ void GameScene::RunEnemyToPlayer(float delta)
 
 void GameScene::onTouchesBegan(const std::vector<Touch*>& touches, Event* unused_event)
 {
+    if (this->getChildByTag(TAG_SPRITE_PLAYER) == NULL)
+        return;
+
     if (m_is_setting)
         return;
 
@@ -534,13 +586,15 @@ void GameScene::onTouchesBegan(const std::vector<Touch*>& touches, Event* unused
         {
             if (m_bullet_count > 0 && !m_is_reloading)
             {
+                AudioEngine::play2d("Sounds/Gun_Shoot.wav");
                 this->scheduleOnce(CC_SCHEDULE_SELECTOR(GameScene::SetBullet), 0);
                 m_bullet_ui.at(5 - m_bullet_count)->setOpacity(122);
             }
             else if (m_bullet_count > 0 && m_is_reloading)
-                SimpleAudioEngine::getInstance()->playEffect("");   // 철컥하는 소리
+                AudioEngine::play2d("Sounds/Gun_Reload.wav");
             else
-                SimpleAudioEngine::getInstance()->playEffect("");   // 장전하는 소리
+                AudioEngine::play2d("Sounds/Gun_None.mp3");
+
         }
         else if (reloading_rect.containsPoint(location))
         {
@@ -572,6 +626,9 @@ void GameScene::onTouchesBegan(const std::vector<Touch*>& touches, Event* unused
 
 void GameScene::onTouchesMoved(const std::vector<Touch*>& touches, Event* unused_event)
 {
+    if (this->getChildByTag(TAG_SPRITE_PLAYER) == NULL)
+        return;
+
     if (m_is_setting)
         return;
 
@@ -608,18 +665,26 @@ void GameScene::SettingMenuCallback(Ref* sender)
 {
     auto item = (MenuItemLabel*)sender;
 
-    SimpleAudioEngine::getInstance()->playEffect("Sounds/Button_Click.mp3");
+    AudioEngine::play2d("Sounds/Button_Click.mp3");
+
+    CCLOG("call before");
+    Director::getInstance()->resume();
+    CCLOG("call after");
 
     switch (item->getTag())
     {
     case TAG_ITEM_BACK:
         m_is_setting = false;
         this->getChildByTag(TAG_LAYER_GUI)->getChildByTag(TAG_LAYER_SETTING)->setVisible(false);
-        Director::getInstance()->resume();
+        break;
+
+    case TAG_ITEM_RETRY:
+        Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
+        Director::getInstance()->replaceScene(GameScene::createScene());
         break;
 
     case TAG_ITEM_TITLE:
-        Director::getInstance()->resume();
+        Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
         Director::getInstance()->replaceScene(MenuScene::createScene());
         break;
     }

@@ -3,9 +3,8 @@
 
 #include "cocos2d.h"
 #include "MenuScene.h"
-#include "cocos\editor-support\cocostudio\SimpleAudioEngine.h"
+#include "AudioEngine.h"
 
-using namespace CocosDenshion;
 USING_NS_CC;
 
 #define TAG_SPRITE_PLAYER			1
@@ -19,7 +18,9 @@ USING_NS_CC;
 #define TAG_UI_LIFE					8
 #define TAG_LAYER_SETTING			9
 #define TAG_ITEM_BACK				10
-#define TAG_ITEM_TITLE				11
+#define TAG_ITEM_RETRY				11
+#define TAG_ITEM_TITLE				12
+#define TAG_LAYER_GAME_OVER			13
 
 #define PADDING_SCREEN_X			50
 #define PADDING_SCREEN_Y			100
@@ -68,6 +69,7 @@ public:
 	void InitLifeUI();
 	void InitBulletUI();
 	void InitSettingLayer();
+	void InitGameOverLayer();
 
 	void InitPlayer();
 	void PlayerMoveAnimation();

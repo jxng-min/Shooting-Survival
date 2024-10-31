@@ -15,7 +15,9 @@ bool MenuScene::init()
     if (!Layer::init())
         return false;
 
-    SimpleAudioEngine::getInstance()->playBackgroundMusic("Sounds/MenuBackground.mp3");
+    Director::getInstance()->resume();
+    AudioEngine::stopAll();
+    AudioEngine::play2d("Sounds/MenuBackground.mp3", true);
 
     InitData();
     InitBackground();
@@ -101,7 +103,8 @@ void MenuScene::InitMenu()
 
 void MenuScene::MenuCallback(Ref* sender)
 {
-    SimpleAudioEngine::getInstance()->playEffect("Sounds/ButtonClick.mp3");
+    AudioEngine::play2d("Sounds/Button_Click.mp3");
+    CCLOG("버튼 소리 출력");
 
     auto item = (MenuItemLabel*)sender;
 

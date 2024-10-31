@@ -1,5 +1,6 @@
 #include "AppDelegate.h"
 #include "MenuScene.h"
+#include "AudioEngine.h"
 
 // #define USE_AUDIO_ENGINE 1
 
@@ -73,8 +74,13 @@ bool AppDelegate::applicationDidFinishLaunching()
 
     register_all_packages();
 
-    SimpleAudioEngine::getInstance()->preloadEffect("Sounds/Button_Click.mp3");
-    SimpleAudioEngine::getInstance()->preloadBackgroundMusic("Sounds/MenuBackground.mp3");
+    AudioEngine::preload("Sounds/Button_Click.mp3");
+    AudioEngine::preload("Sounds/Player_Die.mp3");
+    AudioEngine::preload("Sounds/Slime_Dead.mp3");
+    AudioEngine::preload("Sounds/Gun_Reload.mp3");
+    AudioEngine::preload("Sounds/Gun_Shoot.mp3");
+    AudioEngine::preload("Sounds/Player_Damage.mp3");
+    AudioEngine::preload("Sounds/MenuBackground.mp3");
 
     auto scene = MenuScene::createScene();
     director->runWithScene(scene);
